@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>SRB Banking – Aadhaar & Voter PDF Tool</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- jsPDF & pdf-lib -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+
+  <style>
+    body{
+      margin:0;
+      padding:20px;
+      min-height:100vh;
+      font-family:Segoe UI,Arial,sans-serif;
+      background:linear-gradient(90deg,#0f4c81,#4fa3ff);
+    }
+    .container{
+      max-width:950px;
+      margin:auto;
+      background:#fff;
+      padding:30px;
+      border-radius:18px;
+      box-shadow:0 20px 40px rgba(0,0,0,0.25);
+      animation:fade 0.6s ease;
+    }
+    h2{color:#0f4c81;text-align:center;margin-top:30px}
+    .brand{text-align:center;font-weight:700;font-size:18px;color:#0f4c81}
+    .sub{text-align:center;color:#555;font-size:14px;margin-bottom:20px}
+    input,select,button{
+      width:100%;
+      padding:16px;
+      margin:12px 0;
+      font-size:16px;
+      border-radius:14px;
+      border:1px solid #ccd7e2;
+    }
+    button{
+      background:linear-gradient(90deg,#0f4c81,#4fa3ff);
+      color:#fff;
+      border:none;
+      font-weight:700;
+      cursor:pointer;
+      transition:all 0.2s ease;
+    }
+    button:hover{transform:translateY(-3px);box-shadow:0 12px 25px rgba(15,76,129,.45)}
+    hr{border:none;height:1px;margin:35px 0;background:linear-gradient(to right,#0f4c81,#4fa3ff)}
+    iframe{width:100%;height:520px;border-radius:14px;display:none;margin-top:20px;border:1px solid #ddd}
+    @keyframes fade{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="brand">SRB BANKING PORTAL</div>
+  <div class="sub">Made by Ranjeet Yadav</div>
+
+  <h2>1️⃣ Aadhaar Front + Back Merge</h2>
+  <input type="file" id="a1" accept="image/*" title="Upload Aadhaar Front Image" placeholder="Aadhaar Front Image">
+  <input type="file" id="a2" accept="image/*" title="Upload Aadhaar Back Image" placeholder="Aadhaar Back Image">
+  <select id="aType"><option value="jpeg">JPEG</option><option value="pdf">PDF</option></select>
+  <button onclick="mergeAadhaar()">Merge & Download</button>
+
+  <hr>
+
+  <h2>2️⃣ Voter Card Paste on MMSY PDF</h2>
+  <div class="sub">Upload MMSY form PDF + Voter ID front & back (side‑by‑side placement)</div>
+  <input type="file" id="templatePdf" accept="application/pdf" title="Upload MMSY Form PDF (Punjabi + English)">
+  <input type="file" id="vFront" accept="image/*" title="Upload Voter ID Front Image">
+  <input type="file" id="vBack" accept="image/*" title="Upload Voter ID Back Image">
+
+  <button onclick="generateVoterPDF('pa')">Generate Punjabi PDF</button>
+  <button onclick="generateVoterPDF('en')">Generate English PDF</button>
+
+  <iframe id="preview"></iframe>
+
+  <hr>
+
+  <h2>3️⃣ Any Image to PDF</h2>
+  <input type="file" id="singleImg" accept="image/*" title="Upload Any Image to Convert into PDF">
+  <button onclick="imageToPDF()">Convert to PDF</button>
+
+  <canvas id="c" style="display:none"></canvas>
+</div>
+
+<script>
+const canvas=document.getElementById('c');
+const ctx=canvas.getContext('2d');
+
+function loadImg(f){return new Promise(r=>{const i=new Image();i.onload=()=>r(i);i.src=URL.createObjectURL(f);});}
+
+async function mergeAadhaar(){
+  const f1=document.getElementById('a1').files[0];
+  const f2=document.getElementById('a2').files[0];
+  if(!f1||!f2) return alert('Upload both images');
+  const i1=await loadImg(f1);const i2=await loadImg(f2);
+  canvas.width=Math.max(i1.width,i2.width);
+  canvas.height=i1.height+i2.height;
+  ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.drawImage(i1,0,0);ctx.drawImage(i2,0,i1.height);
+  if(document.getElementById('aType').value==='jpeg'){
+    download(canvas.toDataURL('image/jpeg',0.7),'aadhaar.jpg');
+  }else{
+    const {jsPDF}=window.jspdf;
+    const pdf=new jsPDF('p','px',[canvas.width,canvas.height]);
+    pdf.addImage(canvas.toDataURL('image/jpeg',0.7),'JPEG',0,0);
+    pdf.save('aadhaar.pdf');
+  }
+}
+
+async function generateVoterPDF(lang){
+  const pdfFile=document.getElementById('templatePdf').files[0];
+  const f=document.getElementById('vFront').files[0];
+  const b=document.getElementById('vBack').files[0];
+  if(!pdfFile||!f||!b) return alert('Upload PDF + both images');
+
+  // Load original PDF
+  const srcPdf=await PDFLib.PDFDocument.load(await pdfFile.arrayBuffer());
+  const srcPages=srcPdf.getPages();
+
+  // Create NEW single-page PDF
+  const outPdf=await PDFLib.PDFDocument.create();
+
+  // Decide page index: Punjabi=0, English=1
+  const pageIndex = lang === 'pa' ? 0 : 1;
+  if (!srcPages[pageIndex]) {
+    alert('Selected page not found in PDF');
+    return;
+  }
+
+  // Copy only selected page
+  const [copiedPage] = await outPdf.copyPages(srcPdf, [pageIndex]);
+  outPdf.addPage(copiedPage);
+
+  const page = outPdf.getPages()[0];
+
+  // Embed images
+  const fBytes=await f.arrayBuffer();
+  const bBytes=await b.arrayBuffer();
+  const fImg=f.type.includes('png')?await outPdf.embedPng(fBytes):await outPdf.embedJpg(fBytes);
+  const bImg=b.type.includes('png')?await outPdf.embedPng(bBytes):await outPdf.embedJpg(bBytes);
+
+  // Side-by-side placement
+  page.drawImage(fImg,{x:60,y:300,width:220,height:130});
+  page.drawImage(bImg,{x:320,y:300,width:220,height:130});
+
+  // Save single-page PDF
+  const outBytes = await outPdf.save();
+  const blob = new Blob([outBytes], { type:'application/pdf' });
+  const url = URL.createObjectURL(blob);
+
+  // Preview
+  const iframe=document.getElementById('preview');
+  iframe.src=url;
+  iframe.style.display='block';
+
+  // Download
+  const a=document.createElement('a');
+  a.href=url;
+  a.download = lang === 'pa'
+    ? 'MMSY_Punjabi_Single_Page.pdf'
+    : 'MMSY_English_Single_Page.pdf';
+  a.click();
+}
+
+async function imageToPDF(){
+  const f=document.getElementById('singleImg').files[0];
+  if(!f) return alert('Upload image');
+  const img=await loadImg(f);
+  const {jsPDF}=window.jspdf;
+  const pdf=new jsPDF('p','px',[img.width,img.height]);
+  pdf.addImage(img,'JPEG',0,0);
+  pdf.save('image.pdf');
+}
+
+function download(u,n){const a=document.createElement('a');a.href=u;a.download=n;a.click();}
+</script>
+
+</body>
+</html>
