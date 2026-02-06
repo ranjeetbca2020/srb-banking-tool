@@ -33,6 +33,61 @@ body{
   z-index: 9999;
   box-shadow: 0 4px 10px rgba(0,0,0,0.4);
 }
+#welcomeOverlay{
+  position:fixed;
+  top:0;left:0;
+  width:100%;height:100%;
+  background:rgba(0,0,0,0.6);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:10000;
+  animation:fadeIn .6s ease;
+}
+
+#welcomePopup{
+  background:#fff;
+  padding:25px 30px;
+  border-radius:14px;
+  text-align:center;
+  width:320px;
+  animation:slideUp .6s ease;
+  box-shadow:0 10px 25px rgba(0,0,0,0.4);
+}
+
+#welcomePopup h4{
+  margin-bottom:10px;
+  color:#198754;
+}
+
+#welcomePopup p{
+  font-size:14px;
+  color:#333;
+}
+
+#welcomePopup button{
+  margin-top:15px;
+  padding:8px 20px;
+  background:#198754;
+  color:#fff;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+}
+
+#welcomePopup button:hover{
+  background:#146c43;
+}
+
+@keyframes slideUp{
+  from{transform:translateY(40px);opacity:0}
+  to{transform:translateY(0);opacity:1}
+}
+@keyframes fadeIn{
+  from{opacity:0}
+  to{opacity:1}
+}
+
 
 </style>
 </head>
@@ -69,6 +124,15 @@ body{
 <h5>MMSY Voter Tool</h5>
 <p class="text-muted">PDF / Image + 6 Voters</p>
 </div></div>
+
+<a class="col-md-4" href="pdf.html" target="_blank" style="text-decoration:none;color:inherit" >
+<div >
+<div class="card p-4 text-center" data-bs-toggle="modal" data-bs-target="#formFillModal">
+<i class="bi bi-file-earmark-text fs-1 text-warning"></i>
+<h5>MMSY Form Fill</h5>
+<p class="text-muted">Fill MMSY form</p>
+</div></div>
+</a>
 
 <div class="col-md-4">
 <div class="card p-4 text-center" data-bs-toggle="modal" data-bs-target="#calcModal">
@@ -196,6 +260,18 @@ body{
 </div>
 </div></div></div>
 
+<div id="welcomeOverlay">
+  <div id="welcomePopup">
+    <h4>👋 Welcome to SRB Banking</h4>
+    <p>
+      MMSY, Aadhaar, Voter & PDF tools <br>
+      ek hi jagah par — fast & secure.
+    </p>
+    <button onclick="closeWelcome()">Continue</button>
+  </div>
+</div>
+
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 setInterval(()=>clock.innerText=new Date().toLocaleTimeString(),1000);
@@ -241,12 +317,12 @@ async function generateVoterPDF(){
   p.drawImage(img,{x:0,y:0,width:595,height:842});
  }
  const page=pdf.getPages()[0];
- const sx=60,sy=420,bw=470,bh=200,cw=bw/3,ch=bh/2;
+ const sx=30,sy=450,bw=470,bh=250,cw=bw/3,ch=bh/2;
  for(let i=0;i<imgs.length;i++){
   const b=await imgs[i].arrayBuffer();
   const img=imgs[i].type.includes('png')?await pdf.embedPng(b):await pdf.embedJpg(b);
   const r=Math.floor(i/3),c=i%3;
-  page.drawImage(img,{x:sx+c*cw+5,y:sy-r*ch-ch+5,width:cw-10,height:ch-10});
+  page.drawImage(img,{x:sx+c*cw+5,y:sy-r*ch-ch+5,width:cw-15,height:ch-15});
  }
  showPreview(await pdf.save(),'voterPreview')
 }
@@ -270,6 +346,21 @@ function updateClock(){
 updateClock();               // run once immediately
 setInterval(updateClock,1000); // update every second
 </script>
+<script>
+function closeWelcome(){
+  document.getElementById("welcomeOverlay").style.display="none";
+  sessionStorage.setItem("welcomeShown","yes");
+}
+
+window.onload = function(){
+  if(sessionStorage.getItem("welcomeShown")==="yes"){
+    document.getElementById("welcomeOverlay").style.display="none";
+  }else{
+    setTimeout(closeWelcome,5000); // auto close in 5 sec
+  }
+};
+</script>
+
 
 </body>
 </html>

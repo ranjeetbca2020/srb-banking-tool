@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>MMSY Declaration Form</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
+
+<style>
+body{
+  font-family: Arial, Helvetica, sans-serif;
+  background:#f2f2f2;
+}
+.container{
+  max-width:900px;
+  background:#fff;
+  padding:25px;
+  margin:20px auto;
+  box-shadow:0 0 10px rgba(0,0,0,0.2);
+}
+h3{
+  text-align:center;
+  text-decoration:underline;
+  margin-bottom:25px;
+}
+.row{
+  display:flex;
+  gap:20px;
+  margin-bottom:15px;
+}
+input{
+  border:none;
+  border-bottom:1px solid #000;
+  width:100%;
+  outline:none;
+  font-size:13px;
+}
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:15px;
+}
+table,th,td{
+  border:1px solid #000;
+}
+th,td{
+  padding:6px;
+  text-align:center;
+}
+table input{
+  border:none;
+  text-align:center;
+}
+.voter-box{
+  width:48%;
+  height:180px;
+  border:1px solid #000;
+}
+.footer{
+  display:flex;
+  justify-content:space-between;
+  margin-top:30px;
+}
+button{
+  padding:10px 20px;
+  background:#198754;
+  color:#fff;
+  border:none;
+  cursor:pointer;
+}
+button:hover{background:#146c43}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h3>Mukhy Mantri Sehat Yojana (MMSY) - Family Declaration Form for New Families</h3>
+
+<p>
+I <input id="name" style="width:200px">
+(S/o D/o W/o) <input id="relation" style="width:200px">
+</p>
+
+<div class="row">
+  <div>House No. <input id="house"></div>
+  <div>Village/Town <input id="village"></div>
+</div>
+
+<p>
+District <input id="district" style="width:200px">
+do hereby solemnly affirm and declare the following members of my family:
+</p>
+
+<table>
+<tr>
+<th>S.No.</th><th>Name</th><th>Relation</th><th>Age</th><th>Voter ID No.</th>
+</tr>
+<script>
+for(let i=1;i<=8;i++){
+ document.write(`<tr>
+ <td>${i}</td>
+ <td><input class="m-name"></td>
+ <td><input class="m-rel"></td>
+ <td><input class="m-age"></td>
+ <td><input class="m-voter"></td>
+ </tr>`);
+}
+</script>
+</table>
+
+<div class="row" style="margin-top:30px;">
+  <div class="voter-box"></div>
+  <div class="voter-box"></div>
+</div>
+
+<p style="margin-top:20px;font-size:16px;">
+That if anytime, any information furnished in respect of the above declared family members
+and documents submitted by me are found to be false or incorrect or fake, then I shall be liable
+for any legal action against me as deemed fit by the SHA, along with cancellation of my entitlement
+under the scheme.
+</p>
+
+<div class="footer">
+  <div>
+    Dated: <input id="date" style="width:120px"><br><br>
+    Place: <input id="place" style="width:120px">
+  </div>
+  <div>
+    Signature of Declarant
+    <div style="border-bottom:1px solid #000;width:200px;margin-top:25px;"></div>
+  </div>
+</div>
+
+<button onclick="generatePDF()">Generate PDF</button>
+
+</div>
+
+<script>
+async function generatePDF(){
+
+ const pdf = await PDFLib.PDFDocument.create();
+ const page = pdf.addPage([595,842]);
+ const font = await pdf.embedFont(PDFLib.StandardFonts.Helvetica);
+
+ const T=(t,x,y,s=10)=>page.drawText(String(t||""),{x,y,size:s,font});
+ const L=(x1,y1,x2,y2)=>page.drawLine({start:{x:x1,y:y1},end:{x:x2,y:y2}});
+
+ /* GET VALUES */
+ const name = document.getElementById("name").value;
+ const rel = document.getElementById("relation").value;
+ const house = document.getElementById("house").value;
+ const village = document.getElementById("village").value;
+ const district = document.getElementById("district").value;
+ const date = document.getElementById("date").value;
+ const place = document.getElementById("place").value;
+
+ const names = document.querySelectorAll(".m-name");
+ const rels  = document.querySelectorAll(".m-rel");
+ const ages  = document.querySelectorAll(".m-age");
+ const voters= document.querySelectorAll(".m-voter");
+
+ /* HEADER */
+ T("Mukhy Mantri Sehat Yojana (MMSY) - Family Declaration Form for New Families",90,810,12);
+ L(90,805,518,805);
+
+ /* BASIC DETAILS */
+ T("I",40,780); T(name,55,780);
+ T("(S/o D/o W/o)",260,780); T(rel,355,780);
+
+ T("House No.",40,750); T(house,105,750);
+ T("Village/Town",300,750); T(village,395,750);
+
+ T("District",40,725); T(district,95,725);
+ T("do hereby solemnly affirm and declare the following members of my family:",230,725);
+
+ /* TABLE */
+ let y=700,row=22;
+ const cols=[40,75,260,360,415,555];
+ for(let i=0;i<=9;i++) L(40,y-i*row,555,y-i*row);
+ cols.forEach(x=>L(x,y,x,y-row*9));
+
+ T("S.No.",48,y-15);
+ T("Name",120,y-15);
+ T("Relation",275,y-15);
+ T("Age",370,y-15);
+ T("Voter ID No.",445,y-15);
+
+ let ry=y-row-15;
+ for(let i=0;i<8;i++){
+   T(String(i+1),50,ry);
+   T(names[i].value,90,ry);
+   T(rels[i].value,265,ry);
+   T(ages[i].value,375,ry);
+   T(voters[i].value,435,ry);
+   ry-=row;
+ }
+
+ /* VOTER BOXES (BLANK) */
+
+
+ /* DECLARATION */
+ T("That if anytime, any information furnished in respect of the above declared family members and",40,180,11);
+ T("documents submitted by me are found to be false or incorrect or fake, then I shall be liable for any legal",40,165,11);
+ T("action against me as deemed fit by the SHA, along with cancellation of my entitlement under the scheme.",40,150,11);
+
+ /* FOOTER */
+ T("Dated:",40,110); T(date,90,110);
+ T("Place:",40,90);  T(place,90,90);
+ T("Signature of Declarant",400,90);
+ L(400,85,555,85);
+
+ const bytes = await pdf.save();
+ window.open(URL.createObjectURL(new Blob([bytes],{type:"application/pdf"})));
+}
+</script>
+
+</body>
+</html>
