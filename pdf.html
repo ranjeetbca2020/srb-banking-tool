@@ -135,6 +135,7 @@ under the scheme.
 </div>
 
 <button onclick="generatePDF()">Generate PDF</button>
+<button onclick="generatePDF1()">Download PDF</button>
 
 </div>
 
@@ -212,9 +213,104 @@ async function generatePDF(){
  T("Signature of Declarant",400,90);
  L(400,85,555,85);
 
- const bytes = await pdf.save();
+  const bytes = await pdf.save();
  window.open(URL.createObjectURL(new Blob([bytes],{type:"application/pdf"})));
+
 }
+
+async function generatePDF1(){
+
+
+ const pdf = await PDFLib.PDFDocument.create();
+ const page = pdf.addPage([595,842]);
+ const font = await pdf.embedFont(PDFLib.StandardFonts.Helvetica);
+
+ const T=(t,x,y,s=10)=>page.drawText(String(t||""),{x,y,size:s,font});
+ const L=(x1,y1,x2,y2)=>page.drawLine({start:{x:x1,y:y1},end:{x:x2,y:y2}});
+
+ /* GET VALUES */
+ const name = document.getElementById("name").value;
+ const rel = document.getElementById("relation").value;
+ const house = document.getElementById("house").value;
+ const village = document.getElementById("village").value;
+ const district = document.getElementById("district").value;
+ const date = document.getElementById("date").value;
+ const place = document.getElementById("place").value;
+
+ const names = document.querySelectorAll(".m-name");
+ const rels  = document.querySelectorAll(".m-rel");
+ const ages  = document.querySelectorAll(".m-age");
+ const voters= document.querySelectorAll(".m-voter");
+
+ /* HEADER */
+ T("Mukhy Mantri Sehat Yojana (MMSY) - Family Declaration Form for New Families",90,810,12);
+ L(90,805,518,805);
+
+ /* BASIC DETAILS */
+ T("I",40,780); T(name,55,780);
+ T("(S/o D/o W/o)",260,780); T(rel,355,780);
+
+ T("House No.",40,750); T(house,105,750);
+ T("Village/Town",300,750); T(village,395,750);
+
+ T("District",40,725); T(district,95,725);
+ T("do hereby solemnly affirm and declare the following members of my family:",230,725);
+
+ /* TABLE */
+ let y=700,row=22;
+ const cols=[40,75,260,360,415,555];
+ for(let i=0;i<=9;i++) L(40,y-i*row,555,y-i*row);
+ cols.forEach(x=>L(x,y,x,y-row*9));
+
+ T("S.No.",48,y-15);
+ T("Name",120,y-15);
+ T("Relation",275,y-15);
+ T("Age",370,y-15);
+ T("Voter ID No.",445,y-15);
+
+ let ry=y-row-15;
+ for(let i=0;i<8;i++){
+   T(String(i+1),50,ry);
+   T(names[i].value,90,ry);
+   T(rels[i].value,265,ry);
+   T(ages[i].value,375,ry);
+   T(voters[i].value,435,ry);
+   ry-=row;
+ }
+
+ /* VOTER BOXES (BLANK) */
+
+
+ /* DECLARATION */
+ T("That if anytime, any information furnished in respect of the above declared family members and",40,180,11);
+ T("documents submitted by me are found to be false or incorrect or fake, then I shall be liable for any legal",40,165,11);
+ T("action against me as deemed fit by the SHA, along with cancellation of my entitlement under the scheme.",40,150,11);
+
+ /* FOOTER */
+ T("Dated:",40,110); T(date,90,110);
+ T("Place:",40,90);  T(place,90,90);
+ T("Signature of Declarant",400,90);
+ L(400,85,555,85);
+
+
+
+   const bytes = await pdf.save();
+
+  // 🔽 DOWNLOAD LOGIC
+  const blob = new Blob([bytes], { type: "application/pdf" });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "MMSY_Declaration_Form.pdf"; // file name
+  document.body.appendChild(a);
+  a.click();
+
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+
 </script>
 
 </body>
