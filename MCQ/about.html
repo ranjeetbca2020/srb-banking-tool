@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About | UIDAI CBT Mock Test</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/responsive.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="nav-bar">
+      <a class="brand" href="index.html">UIDAI CBT MOCK TEST</a>
+      <nav class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="quiz.html">Quiz</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="review.html">Review</a>
+      </nav>
+      <button class="theme-toggle" data-theme-toggle>Dark Mode</button>
+    </header>
+    <main>
+      <section class="about-card">
+        <h1>About UIDAI CBT Mock Test</h1>
+        <p>This fully offline exam portal is built with pure HTML5, CSS3 and vanilla JavaScript. It reads a structured JSON question bank and delivers a premium CBT experience without servers.</p>
+        <h2>Features</h2>
+        <ul>
+          <li>Complete offline use from <code>index.html</code>.</li>
+          <li>Smart test settings with question count, topic selection, and shuffle options.</li>
+          <li>Automatic saving and resume from browser storage.</li>
+          <li>Result analytics, performance dashboard and review mode.</li>
+          <li>Bookmarking, note taking and keyboard navigation.</li>
+          <li>Import new question sets using JSON input.</li>
+        </ul>
+        <h2>How it works</h2>
+        <p>The app loads <code>data/questions.json</code> locally, builds randomized quizzes, tracks answers, and saves progress in <code>localStorage</code>. You can open this project directly from your browser.</p>
+      </section>
+    </main>
+    <footer class="footer-bar">
+      <p>Designed for UIDAI exam preparation and realistic CBT practice.</p>
+    </footer>
+  </div>
+  <script src="assets/js/utils.js"></script>
+  <script src="assets/js/storage.js"></script>
+  <script src="assets/js/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => App.initCommon());
+  </script>
+</body>
+</html>

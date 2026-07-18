@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Result | UIDAI CBT Mock Test</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/result.css" />
+  <link rel="stylesheet" href="assets/css/responsive.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="nav-bar">
+      <a class="brand" href="index.html">UIDAI CBT MOCK TEST</a>
+      <nav class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="quiz.html">Quiz</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="review.html">Review</a>
+      </nav>
+      <button class="theme-toggle" data-theme-toggle>Dark Mode</button>
+    </header>
+    <main class="result-main">
+      <section class="result-card">
+        <h1>Test Result</h1>
+        <div class="result-summary" id="resultSummary"></div>
+        <div class="result-grid" id="resultGrid"></div>
+        <div id="answerSummary" class="answer-summary"></div>
+        <div class="result-actions">
+          <button class="button button-primary" id="retryWrong">Retry Wrong</button>
+          <button class="button button-secondary" id="retrySkipped">Retry Skipped</button>
+          <button class="button button-secondary" id="retryAll">Retry Entire Test</button>
+          <button class="button button-secondary" id="reviewAnswers">Review Answers</button>
+          <button class="button button-secondary" id="printResult">Print</button>
+        </div>
+      </section>
+    </main>
+    <footer class="footer-bar">
+      <p>Share or print your result summary with one click.</p>
+    </footer>
+  </div>
+  <script src="assets/js/storage.js"></script>
+  <script src="assets/js/utils.js"></script>
+  <script src="assets/js/app.js"></script>
+  <script>
+    function renderResultPage() {
+      const data = Storage.load('ucbt_last_result', null);
+      const container = document.getElementById('resultSummary');
+      const grid = document.getElementById('resultGrid');
+      if (!data || !data.summary) {
+        container.innerHTML = '<p>No result data found. Complete a quiz to view results.</p>';
+        document.getElementById('retryWrong').disabled = true;
+        document.getElementById('retrySkipped').disabled = true;
+        document.getElementById('retryAll').disabled = true;
+        document.getElementById('reviewAnswers').disabled = true;
+        return;
+      }
+      const summary = data.summary || {};
+      const pass = summary.pass || false;
+      const percentage = summary.percentage || 0;
+      const accuracy = summary.accuracy || 0;
+      const total = summary.total || 0;
+      const answered = summary.answered || 0;
+      const correct = summary.correct || 0;
+      const wrong = summary.wrong || 0;
+      const skipped = summary.skipped || 0;
+      const elapsed = summary.elapsed || 0;
+      const timePerQ = summary.approxTimePerQuestion || 0;
+      container.innerHTML = `<div class="result-badge ${pass ? 'pass' : 'fail'}">${pass ? 'Pass' : 'Fail'}</div>
+        <p>Score ${percentage}% — Accuracy ${accuracy}%</p>`;
+      const details = [
+        ['Total Questions', total],
+        ['Attempted', answered],
+        ['Correct', correct],
+        ['Wrong', wrong],
+        ['Skipped', skipped],
+        ['Time Taken', Utils.formatTime(elapsed)],
+        ['Average Time', `${timePerQ}s`]
+      ];
+      grid.innerHTML = details.map(([label, value]) => `<div class="result-tile"><span>${label}</span><strong>${value}</strong></div>`).join('');
+      
+      // Render answer summary
+      if (data.resultState && data.resultState.questions && Array.isArray(data.resultState.questions)) {
+        const questions = data.resultState.questions;
+        const answers = data.resultState.answers || {};
+        const skipped = data.resultState.skipped || [];
+        
+        const answerPalette = questions.map((q, index) => {
+          if (!q) return '';
+          const qNum = index + 1;
+          const userAnswer = answers[q.id];
+          const correct = q.correct || q.answer || 1;
+          const isSkipped = skipped.includes(q.id);
+          
+          let status = 'unanswered';
+          let label = '';
+          if (isSkipped) {
+            status = 'skipped';
+            label = 'S';
+          } else if (!userAnswer) {
+            status = 'unanswered';
+            label = '—';
+          } else if (userAnswer === correct) {
+            status = 'correct';
+            label = '✓';
+          } else {
+            status = 'wrong';
+            label = '✗';
+          }
+          
+          return `<div class="answer-item ${status}" title="Q${qNum}: ${status}">${label}</div>`;
+        }).join('');
+        
+        const summaryHtml = `
+          <h3>Answer Summary (Click "Review Answers" for details)</h3>
+          <div class="answer-palette">${answerPalette}</div>
+          <p style="margin-top: 12px; font-size: 13px; color: var(--muted);">
+            <span>✓ = Correct</span> &nbsp;|&nbsp;
+            <span>✗ = Wrong</span> &nbsp;|&nbsp;
+            <span>S = Skipped</span> &nbsp;|&nbsp;
+            <span>— = Not Answered</span>
+          </p>
+        `;
+        document.getElementById('answerSummary').innerHTML = summaryHtml;
+      }
+      
+      try {
+        document.getElementById('retryWrong').addEventListener('click', () => { localStorage.setItem('ucbt_retry_mode', 'wrong'); window.location.href = 'quiz.html'; });
+        document.getElementById('retrySkipped').addEventListener('click', () => { localStorage.setItem('ucbt_retry_mode', 'skipped'); window.location.href = 'quiz.html'; });
+        document.getElementById('retryAll').addEventListener('click', () => { localStorage.removeItem('ucbt_retry_mode'); window.location.href = 'quiz.html'; });
+        document.getElementById('reviewAnswers').addEventListener('click', () => window.location.href = 'review.html');
+        document.getElementById('printResult').addEventListener('click', () => window.print());
+      } catch (error) {
+        console.error('Error attaching event handlers:', error);
+      }
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+      try {
+        App.initCommon();
+        renderResultPage();
+      } catch (error) {
+        console.error('Error rendering result page:', error);
+        document.getElementById('resultSummary').innerHTML = '<p>Error loading results. Please return <a href="index.html">home</a>.</p>';
+      }
+    });
+  </script>
+</body>
+</html>

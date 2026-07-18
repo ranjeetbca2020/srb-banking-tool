@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UIDAI CBT Mock Test</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/responsive.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="nav-bar">
+      <a class="brand" href="index.html">UIDAI CBT MOCK TEST</a>
+      <nav class="nav-links">
+        <a href="quiz.html">Start Test</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="review.html">Review</a>
+        <a href="about.html">About</a>
+      </nav>
+      <button class="theme-toggle" data-theme-toggle>Dark Mode</button>
+    </header>
+    <main>
+      <section class="hero-section">
+        <div class="hero-copy">
+          <p class="eyebrow">Complete offline CBT exam portal</p>
+          <h1>UIDAI CBT Mock Test</h1>
+          <p>Practice with authentic UIDAI exam-style questions, review answers, analyze performance, and track improvement entirely offline.</p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="quiz.html">Start Test</a>
+            <a class="button button-secondary" href="dashboard.html">View Dashboard</a>
+          </div>
+        </div>
+        <div class="hero-panel">
+          <div class="stat-card">
+            <span class="stat-label">Total Questions</span>
+            <strong data-total-questions>0</strong>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Best Score</span>
+            <strong data-highscore-value>0</strong>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Saved Settings</span>
+            <strong>Offline Ready</strong>
+          </div>
+        </div>
+      </section>
+      <section class="features-grid">
+        <article class="feature-card">
+          <h2>Professional CBT Interface</h2>
+          <p>Exam-style layout with timer, answer palette, review, bookmarks and keyboard navigation.</p>
+        </article>
+        <article class="feature-card">
+          <h2>Topic Mode</h2>
+          <p>Choose Basic Knowledge, Biometric, Demographic, UCL, Operator, Supervisor, Authentication, Update and Mixed tests.</p>
+        </article>
+        <article class="feature-card">
+          <h2>Performance Analytics</h2>
+          <p>Track accuracy, topic strength, weak topics, streaks, and test progress through smart charts.</p>
+        </article>
+        <article class="feature-card">
+          <h2>Offline First</h2>
+          <p>Built with pure HTML, CSS and JavaScript. No backend required. Open index.html directly.</p>
+        </article>
+      </section>
+      <section class="cta-cards">
+        <div class="callout-card">
+          <h3>Daily Challenge</h3>
+          <p>Answer 10 fresh questions every day and compare scores instantly.</p>
+        </div>
+        <div class="callout-card">
+          <h3>Random Practice</h3>
+          <p>Generate randomized tests with shuffled questions and options for exam simulation.</p>
+        </div>
+        <div class="callout-card">
+          <h3>Import & Extend</h3>
+          <p>Bring your own JSON database and keep the app up to date with new question sets.</p>
+        </div>
+      </section>
+    </main>
+    <footer class="footer-bar">
+      <p>UIDAI CBT Mock Test — Fully offline exam simulator.</p>
+    </footer>
+  </div>
+  <script src="assets/js/utils.js"></script>
+  <script src="assets/js/storage.js"></script>
+  <script src="assets/js/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => App.initCommon());
+  </script>
+</body>
+</html>

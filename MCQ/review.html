@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Version: 2.6 -->
+  <title>Review | UIDAI CBT Mock Test</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/dashboard.css" />
+  <link rel="stylesheet" href="assets/css/responsive.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="nav-bar">
+      <a class="brand" href="index.html">UIDAI CBT MOCK TEST</a>
+      <nav class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="quiz.html">Quiz</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="result.html">Result</a>
+      </nav>
+      <button class="theme-toggle" data-theme-toggle>Dark Mode</button>
+    </header>
+    <main>
+      <section class="review-filter-panel">
+        <div>
+          <label>Search <input id="searchInput" type="search" placeholder="Search keyword" /></label>
+        </div>
+        <div>
+          <label>Topic <select id="topicFilter"><option>All</option></select></label>
+          <label>Difficulty <select id="difficultyFilter"><option>All</option><option>Easy</option><option>Medium</option><option>Hard</option></select></label>
+          <label>Result <select id="correctnessFilter"><option>All</option><option>Correct</option><option>Wrong</option><option>Unanswered</option></select></label>
+          <label class="switch-field"><input id="bookmarkFilter" type="checkbox" /><span>Bookmarked Only</span></label>
+        </div>
+      </section>
+      <section class="review-summary">
+        <h2 id="reviewSummary">Review questions</h2>
+      </section>
+      <ul id="reviewList" class="review-list"></ul>
+    </main>
+    <footer class="footer-bar">
+      <p>Review every answer with correct/incorrect highlights and explanation placeholders.</p>
+    </footer>
+  </div>
+  <script src="assets/js/utils.js"></script>
+  <script src="assets/js/storage.js"></script>
+  <script src="assets/js/app.js"></script>
+  <script src="assets/js/review.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log('Review page DOMContentLoaded');
+      console.log('App.questions available:', typeof App !== 'undefined' && App.questions ? App.questions.length : 'NOT LOADED');
+      if (typeof App !== 'undefined') {
+        App.initCommon();
+        console.log('App.initCommon() called, questions now:', App.questions ? App.questions.length : 'NOT LOADED');
+      }
+      if (typeof Review !== 'undefined') {
+        Review.init();
+        console.log('Review.init() called');
+      }
+    });
+  </script>
+</body>
+</html>

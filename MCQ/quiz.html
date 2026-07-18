@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Version: 2.1 -->
+  <title>Quiz | UIDAI CBT Mock Test</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/quiz.css" />
+  <link rel="stylesheet" href="assets/css/responsive.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="nav-bar">
+      <a class="brand" href="index.html">UIDAI CBT MOCK TEST</a>
+      <nav class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="review.html">Review</a>
+        <a href="result.html">Result</a>
+      </nav>
+      <button class="theme-toggle" data-theme-toggle>Dark Mode</button>
+    </header>
+    <main>
+      <section id="setupPanel" class="setup-panel">
+        <div class="setup-card">
+          <h2>Test Settings</h2>
+          <div class="form-grid">
+            <label>
+              Number of Questions
+              <select id="questionCount" size="8">
+                <option value="5">5 Questions</option>
+                <option value="10">10 Questions</option>
+                <option value="15">15 Questions</option>
+                <option value="20">20 Questions</option>
+                <option value="25">25 Questions</option>
+                <option value="30">30 Questions</option>
+                <option value="35">35 Questions</option>
+                <option value="40">40 Questions</option>
+                <option value="45">45 Questions</option>
+                <option value="50">50 Questions</option>
+                <option value="100">100 Questions</option>
+                <option value="454">All Questions</option>
+              </select>
+            </label>
+            <label>
+              Topic Mode
+              <select id="topicMode">
+                <option>Mixed Test</option>
+                <option>Basic Knowledge</option>
+                <option>Biometric</option>
+                <option>Demographic</option>
+                <option>UCL</option>
+                <option>Operator</option>
+                <option>Supervisor</option>
+                <option>Authentication</option>
+                <option>Update</option>
+              </select>
+            </label>
+            <label class="switch-field"><input id="timerEnabled" type="checkbox" checked /><span>Timer ON/OFF</span></label>
+            <label class="switch-field"><input id="shuffleQuestions" type="checkbox" checked /><span>Shuffle Questions</span></label>
+            <label class="switch-field"><input id="shuffleOptions" type="checkbox" checked /><span>Shuffle Options</span></label>
+            <label class="switch-field"><input id="soundEnabled" type="checkbox" checked /><span>Sound ON/OFF</span></label>
+            <label>
+              Font Size
+              <input id="fontSize" type="number" min="14" max="22" value="16" />
+            </label>
+          </div>
+          <div class="setup-footer">
+            <button class="button button-primary" id="startTestButton">Start Test</button>
+            <a class="button button-secondary" href="dashboard.html">View Progress</a>
+          </div>
+        </div>
+      </section>
+      <section id="quizPanel" class="quiz-shell hidden">
+        <div class="quiz-header">
+          <div class="quiz-summary">
+            <div class="quiz-chip">Timer: <strong id="timerValue">00:00</strong></div>
+            <div class="quiz-chip">Question: <strong id="questionNumber">0 of 0</strong></div>
+            <div class="quiz-chip">Topic: <strong id="currentTopic">Mixed</strong></div>
+          </div>
+          <div class="quiz-progress"><span id="progressBar"></span></div>
+        </div>
+        <div class="quiz-grid">
+          <article class="quiz-card">
+            <div class="quiz-card-header">
+              <h2 id="questionText"></h2>
+              <div class="quiz-actions">
+                <button type="button" id="bookmarkButton" class="button button-secondary">Bookmark</button>
+                <button type="button" id="fullscreenButton" class="button button-secondary">Fullscreen</button>
+              </div>
+            </div>
+            <div id="optionList" class="option-grid"></div>
+            <div class="notes-panel">
+              <label for="questionNote">Question Notes</label>
+              <textarea id="questionNote" rows="4" placeholder="Add a quick note for later review."></textarea>
+            </div>
+            <div class="quiz-actions-row">
+              <button class="button button-secondary" id="prevButton">Previous</button>
+              <button class="button button-primary" id="saveNextButton">Save & Next</button>
+              <button class="button button-secondary" id="markButton">Mark for Review</button>
+              <button class="button button-secondary" id="skipButton">Skip</button>
+              <button class="button button-danger" id="submitButton">Submit</button>
+            </div>
+            <div id="activeTestMessage" class="active-test-message hidden"></div>
+          </article>
+          <aside class="quality-panel">
+            <div class="palette-header">
+              <h3>Question Palette</h3>
+              <p>Green = answered · Yellow = review · Red = skipped · Grey = not visited</p>
+            </div>
+            <div id="questionPalette" class="question-palette"></div>
+          </aside>
+        </div>
+      </section>
+    </main>
+    <footer class="footer-bar">
+      <p>Use A/B/C/D, Arrow keys, and Enter to navigate fast.</p>
+    </footer>
+  </div>
+  <script src="assets/js/utils.js"></script>
+  <script src="assets/js/storage.js"></script>
+  <script src="assets/js/analytics.js"></script>
+  <script src="assets/js/app.js"></script>
+  <script src="assets/js/timer.js"></script>
+  <script src="assets/js/quiz.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      App.initCommon();
+      Quiz.init();
+    });
+  </script>
+</body>
+</html>

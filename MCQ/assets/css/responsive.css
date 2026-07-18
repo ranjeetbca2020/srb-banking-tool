@@ -1,0 +1,21 @@
+@media (max-width: 1080px) {
+  .hero-section { grid-template-columns: 1fr; }
+  .cta-cards { grid-template-columns: 1fr; }
+  .features-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 720px) {
+  .app-shell { padding: 16px; }
+  .nav-bar { flex-direction: column; align-items: flex-start; }
+  .nav-links { width: 100%; justify-content: space-between; }
+  .hero-copy { padding: 24px; }
+  .hero-actions { flex-direction: column; width: 100%; }
+  .button { width: 100%; }
+  .stat-card { padding: 22px; }
+}
+
+@media (max-width: 520px) {
+  .nav-links { gap: 12px; }
+  .hero-copy h1 { font-size: 2.4rem; }
+  .nav-bar { padding: 14px; }
+}

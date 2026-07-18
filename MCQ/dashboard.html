@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard | UIDAI CBT Mock Test</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/dashboard.css" />
+  <link rel="stylesheet" href="assets/css/responsive.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="nav-bar">
+      <a class="brand" href="index.html">UIDAI CBT MOCK TEST</a>
+      <nav class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="quiz.html">Quiz</a>
+        <a href="review.html">Review</a>
+        <a href="result.html">Result</a>
+      </nav>
+      <button class="theme-toggle" data-theme-toggle>Dark Mode</button>
+    </header>
+    <main>
+      <section class="dashboard-grid">
+        <article class="dashboard-card">
+          <h2>Best Score</h2>
+          <p id="bestScore">0%</p>
+        </article>
+        <article class="dashboard-card">
+          <h2>Average Score</h2>
+          <p id="averageScore">0%</p>
+        </article>
+        <article class="dashboard-card">
+          <h2>Total Tests</h2>
+          <p id="totalTests">0</p>
+        </article>
+        <article class="dashboard-card">
+          <h2>Total Questions Solved</h2>
+          <p id="totalQuestions">0</p>
+        </article>
+        <article class="dashboard-card">
+          <h2>Best Topic</h2>
+          <p id="bestTopic">N/A</p>
+        </article>
+        <article class="dashboard-card">
+          <h2>Weak Topic</h2>
+          <p id="weakTopic">N/A</p>
+        </article>
+        <article class="dashboard-card">
+          <h2>Best Streak</h2>
+          <p id="bestStreak">0</p>
+        </article>
+      </section>
+      <section class="chart-section">
+        <div class="chart-card">
+          <h3>Weekly Progress</h3>
+          <canvas id="weeklyChart" width="600" height="300"></canvas>
+        </div>
+        <div class="chart-card">
+          <h3>Topic Accuracy</h3>
+          <canvas id="topicChart" width="600" height="300"></canvas>
+        </div>
+        <div class="chart-card small-card">
+          <h3>Recent Score</h3>
+          <canvas id="ringChart" width="300" height="300"></canvas>
+        </div>
+      </section>
+      <section class="history-section">
+        <div class="history-header">
+          <h2>Recent Tests</h2>
+          <div class="history-actions">
+            <input id="importJsonInput" type="file" accept="application/json" class="visually-hidden" />
+            <button class="button button-secondary" id="importJsonButton">Import JSON</button>
+            <button class="button button-secondary" id="exportAnalyticsButton">Export Analytics</button>
+            <button class="button button-secondary" id="printDashboardButton">Print</button>
+          </div>
+        </div>
+        <ul id="recentTests" class="recent-list"></ul>
+      </section>
+      <section class="message-panel" id="dashboardMessage"></section>
+    </main>
+    <footer class="footer-bar">
+      <p>Interactive dashboard for performance insight and score tracking.</p>
+    </footer>
+  </div>
+  <script src="assets/js/utils.js"></script>
+  <script src="assets/js/storage.js"></script>
+  <script src="assets/js/app.js"></script>
+  <script src="assets/js/charts.js"></script>
+  <script src="assets/js/analytics.js"></script>
+  <script src="assets/js/dashboard.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      App.initCommon();
+      Dashboard.init();
+    });
+  </script>
+</body>
+</html>
